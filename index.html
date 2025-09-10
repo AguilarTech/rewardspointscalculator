@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Aus Supermarket Rewards Points Calculator</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body
+		class="min-h-screen w-full bg-gradient-to-b from-gray-50 to-gray-100 flex items-start justify-center py-10 px-4"
+	>
+		<main class="w-full max-w-5xl flex flex-col gap-6">
+			<header class="flex items-end justify-between gap-4 flex-wrap">
+				<h1 class="text-3xl md:text-4xl font-bold tracking-tight">
+					Aus Supermarket Rewards Points Calculator
+				</h1>
+			</header>
+
+			<!-- Card component wrapper class -->
+			<section
+				class="w-full max-w-3xl rounded-2xl shadow-lg bg-white p-6 md:p-8 border border-gray-100"
+			>
+				<h2 class="text-xl font-semibold mb-4">This transaction</h2>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div>
+						<label
+							for="points"
+							class="block text-sm font-medium text-gray-700 mb-1"
+							>Points Applied</label
+						>
+						<input
+							id="points"
+							type="text"
+							inputmode="numeric"
+							pattern="[0-9]*"
+							class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2"
+							value="18000"
+							autocomplete="off"
+							spellcheck="false"
+						/>
+					</div>
+					<div>
+						<label
+							for="spend"
+							class="block text-sm font-medium text-gray-700 mb-1"
+							>Spend (AUD)</label
+						>
+						<input
+							id="spend"
+							type="text"
+							inputmode="decimal"
+							pattern="[0-9]*[.]?[0-9]*"
+							class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2"
+							value="840"
+							autocomplete="off"
+							spellcheck="false"
+						/>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+					<div
+						class="rounded-xl bg-gray-50 border border-gray-200 p-4"
+					>
+						<div
+							class="text-xs uppercase tracking-wide text-gray-500"
+						>
+							Effective % Discount
+						</div>
+						<div
+							id="statPct"
+							class="text-2xl font-semibold mt-1 break-all"
+						>
+							0.00%
+						</div>
+						<div class="text-sm text-gray-500 mt-1">
+							= $ Discount ÷ Spend
+						</div>
+					</div>
+					<div
+						class="rounded-xl bg-gray-50 border border-gray-200 p-4"
+					>
+						<div
+							class="text-xs uppercase tracking-wide text-gray-500"
+						>
+							Effective $ Discount
+						</div>
+						<div
+							id="statAmt"
+							class="text-2xl font-semibold mt-1 break-all"
+						>
+							$0.00
+						</div>
+						<div class="text-sm text-gray-500 mt-1">
+							= Points × Value per Point
+						</div>
+					</div>
+					<div
+						class="rounded-xl bg-gray-50 border border-gray-200 p-4"
+					>
+						<div
+							class="text-xs uppercase tracking-wide text-gray-500"
+						>
+							Value per Point
+						</div>
+						<div
+							id="statVpp"
+							class="text-2xl font-semibold mt-1 break-all"
+						>
+							0.00 Cents
+						</div>
+						<div id="statVppSub" class="text-sm text-gray-500 mt-1">
+							= $0.00 ÷ 0 (AUD/pt)
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Redemption rate card -->
+			<section
+				class="w-full max-w-3xl rounded-2xl shadow-lg bg-white p-6 md:p-8 border border-gray-100"
+			>
+				<div class="flex items-center justify-between">
+					<h2 class="text-lg font-semibold">Redemption rate</h2>
+					<button
+						id="toggleEdit"
+						type="button"
+						class="inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50"
+						aria-expanded="false"
+						aria-controls="rate-settings"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+							class="w-4 h-4"
+						>
+							<path
+								d="M16.862 4.487l1.687 1.687a1.25 1.25 0 010 1.768L8.21 18.28a1.25 1.25 0 01-.558.328l-4.182 1.12a.625.625 0 01-.76-.76l1.12-4.182a1.25 1.25 0 01.328-.558l10.34-10.34a1.25 1.25 0 011.764 0z"
+							/>
+						</svg>
+						Edit
+					</button>
+				</div>
+
+				<div class="text-sm text-gray-600 mt-2">
+					Current rate:
+					<span id="rateSummary" class="font-medium"
+						>2,000 pts → $10.00</span
+					>
+					(<span id="rateCents">0.50</span> Cents per point)
+				</div>
+
+				<div
+					id="rate-settings"
+					class="grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all duration-300 ease-out max-h-0 opacity-0 overflow-hidden"
+				>
+					<div>
+						<label
+							for="redeemPoints"
+							class="block text-sm font-medium text-gray-700 mb-1"
+							>Points Redeemable</label
+						>
+						<input
+							id="redeemPoints"
+							type="text"
+							inputmode="numeric"
+							pattern="[0-9]*"
+							class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2"
+							value="2000"
+							autocomplete="off"
+							spellcheck="false"
+						/>
+					</div>
+					<div>
+						<label
+							for="redeemDollars"
+							class="block text-sm font-medium text-gray-700 mb-1"
+							>Dollars Received (AUD)</label
+						>
+						<input
+							id="redeemDollars"
+							type="text"
+							inputmode="decimal"
+							pattern="[0-9]*[.]?[0-9]*"
+							class="w-full rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-4 py-2"
+							value="10"
+							autocomplete="off"
+							spellcheck="false"
+						/>
+					</div>
+					<div class="sm:col-span-2 text-sm text-gray-600">
+						Value per point:
+						<span id="vppDetail" class="font-medium"
+							>0.5000 Cents per point</span
+						>
+					</div>
+				</div>
+			</section>
+
+			<!-- Formulas -->
+			<section
+				class="w-full max-w-3xl rounded-2xl shadow-lg bg-white p-6 md:p-8 border border-gray-100"
+			>
+				<h2 class="text-lg font-semibold mb-2">Formulas</h2>
+				<ul class="list-disc pl-6 text-sm text-gray-700 space-y-1">
+					<li>
+						Value per Point = (Dollars Received ÷ Points Redeemable)
+					</li>
+					<li>Effective $ Discount = Points × Value per Point</li>
+					<li>Effective % Discount = ($ Discount ÷ Spend) × 100</li>
+					<li>
+						Display unit: Value per Point shown in cents per point
+						with two decimals in the main card.
+					</li>
+				</ul>
+			</section>
+
+			<footer class="text-xs text-gray-500">
+				Check your programme rules (boosters, tiers, caps) before
+				relying on outputs.
+			</footer>
+		</main>
+
+		<script>
+			// --- Utilities ---
+			const fmtAud = new Intl.NumberFormat('en-AU', {
+				style: 'currency',
+				currency: 'AUD'
+			})
+			const sanitizeInt = (s) => String(s).replace(/[^0-9]/g, '')
+			const sanitizeDec = (s) => {
+				let v = String(s)
+					.replace(/,/g, '')
+					.replace(/[^0-9.]/g, '')
+				const i = v.indexOf('.')
+				if (i !== -1)
+					v = v.slice(0, i + 1) + v.slice(i + 1).replace(/\./g, '')
+				return v
+			}
+			const toNumber = (v) => {
+				const n = parseFloat(String(v))
+				return Number.isFinite(n) ? n : 0
+			}
+
+			// --- State (as DOM values) ---
+			const el = (id) => document.getElementById(id)
+			const inputs = {
+				points: el('points'),
+				spend: el('spend'),
+				redeemPoints: el('redeemPoints'),
+				redeemDollars: el('redeemDollars')
+			}
+
+			const stats = {
+				pct: el('statPct'),
+				amt: el('statAmt'),
+				vpp: el('statVpp'),
+				vppSub: el('statVppSub'),
+				rateSummary: el('rateSummary'),
+				rateCents: el('rateCents'),
+				vppDetail: el('vppDetail')
+			}
+
+			function valuePerPoint() {
+				const pts = toNumber(inputs.redeemPoints.value)
+				const dol = toNumber(inputs.redeemDollars.value)
+				if (pts <= 0) return 0
+				return dol / pts // $ per point
+			}
+
+			function recalc() {
+				const vpp = valuePerPoint()
+				const cpp = vpp * 100 // cents per point
+
+				const pts = toNumber(inputs.points.value)
+				const spend = toNumber(inputs.spend.value)
+
+				const discountAmount = pts * vpp
+				const discountPercent =
+					spend > 0 ? (discountAmount / spend) * 100 : 0
+
+				stats.amt.textContent = fmtAud.format(discountAmount)
+				stats.pct.textContent = discountPercent.toFixed(2) + '%'
+				stats.vpp.textContent = cpp.toFixed(2) + ' Cents'
+				stats.vppSub.textContent = `= ${fmtAud.format(
+					toNumber(inputs.redeemDollars.value)
+				)} ÷ ${Number(
+					inputs.redeemPoints.value || 0
+				).toLocaleString()} (AUD/pt)`
+
+				stats.rateSummary.textContent = `${Number(
+					inputs.redeemPoints.value
+				).toLocaleString()} pts → ${fmtAud.format(
+					toNumber(inputs.redeemDollars.value)
+				)}`
+				stats.rateCents.textContent = cpp.toFixed(2)
+				stats.vppDetail.textContent =
+					cpp.toFixed(4) + ' Cents per point'
+			}
+
+			// --- Event wiring with sanitisation preserving cursor as much as possible ---
+			inputs.points.addEventListener('input', (e) => {
+				const cur = e.target.selectionStart
+				const before = e.target.value
+				e.target.value = sanitizeInt(before)
+				const delta = before.length - e.target.value.length
+				e.target.setSelectionRange(cur - delta, cur - delta)
+				recalc()
+			})
+
+			inputs.spend.addEventListener('input', (e) => {
+				const cur = e.target.selectionStart
+				const before = e.target.value
+				e.target.value = sanitizeDec(before)
+				const delta = before.length - e.target.value.length
+				e.target.setSelectionRange(cur - delta, cur - delta)
+				recalc()
+			})
+
+			inputs.redeemPoints.addEventListener('input', (e) => {
+				const cur = e.target.selectionStart
+				const before = e.target.value
+				e.target.value = sanitizeInt(before)
+				const delta = before.length - e.target.value.length
+				e.target.setSelectionRange(cur - delta, cur - delta)
+				recalc()
+			})
+
+			inputs.redeemDollars.addEventListener('input', (e) => {
+				const cur = e.target.selectionStart
+				const before = e.target.value
+				e.target.value = sanitizeDec(before)
+				const delta = before.length - e.target.value.length
+				e.target.setSelectionRange(cur - delta, cur - delta)
+				recalc()
+			})
+
+			// --- Collapsible panel ---
+			const toggleBtn = el('toggleEdit')
+			const panel = el('rate-settings')
+			let open = false
+
+			toggleBtn.addEventListener('click', () => {
+				open = !open
+				toggleBtn.setAttribute('aria-expanded', String(open))
+				if (open) {
+					panel.classList.remove(
+						'max-h-0',
+						'opacity-0',
+						'overflow-hidden'
+					)
+					panel.classList.add('mt-4', 'max-h-[320px]', 'opacity-100')
+				} else {
+					panel.classList.remove(
+						'mt-4',
+						'max-h-[320px]',
+						'opacity-100'
+					)
+					panel.classList.add(
+						'max-h-0',
+						'opacity-0',
+						'overflow-hidden'
+					)
+				}
+				toggleBtn.innerHTML = open
+					? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M6 18L18 6M6 6l12 12"/></svg> Close'
+					: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M16.862 4.487l1.687 1.687a1.25 1.25 0 010 1.768L8.21 18.28a1.25 1.25 0 01-.558.328l-4.182 1.12a.625.625 0 01-.76-.76l1.12-4.182a1.25 1.25 0 01.328-.558l10.34-10.34a1.25 1.25 0 011.764 0z"/></svg> Edit'
+			})
+
+			// Initial calc
+			recalc()
+		</script>
+	</body>
+</html>
