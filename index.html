@@ -3,24 +3,90 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>Aus Supermarket Rewards Points Calculator</title>
+		<title>Rewards Points Calculator</title>
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+		<!-- Primary SEO Meta Tags -->
+		<meta
+			name="title"
+			content="Aus Supermarket Rewards Points Calculator"
+		/>
+		<meta
+			name="description"
+			content="Free calculator to estimate effective discounts and savings when redeeming supermarket loyalty points in Australia."
+		/>
+		<meta
+			name="keywords"
+			content="supermarket rewards, loyalty points, calculator, Woolworths, Coles, Everyday Rewards, Flybuys, Australia"
+		/>
+		<meta name="author" content="Rewards Points Calculator" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta
+			property="og:url"
+			content="https://rewardspointscalculator.org/"
+		/>
+		<meta
+			property="og:title"
+			content="Aus Supermarket Rewards Points Calculator"
+		/>
+		<meta
+			property="og:description"
+			content="Easily calculate your effective $ discount and % savings when redeeming supermarket reward points in Australia."
+		/>
+		<meta
+			property="og:image"
+			content="https://rewardspointscalculator.org/rewards-points.webp"
+		/>
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta
+			property="twitter:url"
+			content="https://rewardspointscalculator.org/"
+		/>
+		<meta
+			property="twitter:title"
+			content="Aus Supermarket Rewards Points Calculator"
+		/>
+		<meta
+			property="twitter:description"
+			content="Easily calculate your effective $ discount and % savings when redeeming supermarket reward points in Australia."
+		/>
+		<meta
+			property="twitter:image"
+			content="https://rewardspointscalculator.org/rewards-points.webp"
+		/>
 		<script src="https://cdn.tailwindcss.com"></script>
 	</head>
 	<body
-		class="min-h-screen w-full bg-gradient-to-b from-gray-50 to-gray-100 flex items-start justify-center py-10 px-4"
+		class="min-h-screen w-full flex items-start justify-center py-10 px-4"
+		style="background-color: #fbf8f1"
 	>
 		<main class="w-full max-w-5xl flex flex-col gap-6">
-			<header class="flex items-end justify-between gap-4 flex-wrap">
-				<h1 class="text-3xl md:text-4xl font-bold tracking-tight">
-					Aus Supermarket Rewards Points Calculator
-				</h1>
+			<header class="flex items-center justify-between gap-4 flex-wrap">
+				<div class="flex items-center gap-3">
+					<!-- Mascot / Logo slot -->
+					<div id="mascot" class="w-14 h-14">
+						<!-- Place your wombat+cart image here -->
+						<img
+							src="rewards-points.webp"
+							alt="Mascot"
+							class="w-full h-full object-contain"
+						/>
+					</div>
+					<h1 class="text-3xl md:text-4xl font-bold tracking-tight">
+						Rewards Points Calculator
+					</h1>
+				</div>
 			</header>
 
 			<!-- Card component wrapper class -->
 			<section
 				class="w-full max-w-3xl rounded-2xl shadow-lg bg-white p-6 md:p-8 border border-gray-100"
 			>
-				<h2 class="text-xl font-semibold mb-4">This transaction</h2>
+				<!-- <h2 class="text-xl font-semibold mb-4">This transaction</h2> -->
 				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 					<div>
 						<label
@@ -217,8 +283,9 @@
 			</section>
 
 			<footer class="text-xs text-gray-500">
-				Check your programme rules (boosters, tiers, caps) before
-				relying on outputs.
+				This is a generic Australian supermarket rewards point
+				calculator. Check your programme rules (boosters, tiers, caps)
+				before relying on outputs.
 			</footer>
 		</main>
 
